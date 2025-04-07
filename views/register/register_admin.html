@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="libs/image/logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-image: url('libs/image/landscape_background.png');
+            background-size: cover;
+            background-position: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            color: white;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        form {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    max-width: 1300px; /* Increased the max-width for a wider form */
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Creates two columns */
+    gap: 15px;
+    align-items: center;
+}
+
+        label {
+            text-align: left;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+
+        input:focus {
+            border-color: #BF8C5D;
+            box-shadow: 0 0 5px rgba(89, 236, 221, 0.5);
+        }
+
+        button {
+            grid-column: span 2; /* Make button span across two columns */
+            background-color: #BF8C5D;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #a97d54;
+        }
+
+        #home-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        #home-button:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .iti {
+            width: 100% !important;
+            color: #000;
+        }
+
+        .iti .iti-flag {
+            margin-left: 0;
+        }
+
+        .iti .iti-separator {
+            display: none;
+        }
+
+        /* Show error message when validation fails */
+        input:invalid {
+            border: 1px solid red;
+        }
+
+        input:valid {
+            border: 1px solid green;
+        }
+
+        /* Show error message when the field is focused but invalid */
+        input:focus:invalid {
+            border: 1px solid red;
+        }
+
+        input:focus:valid {
+            border: 1px solid green;
+        }
+
+        /* Style for error messages */
+.error-message {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 1px;
+    color: red !important;
+    font-size: 14px;
+    min-height: 20px; /* Prevent shifting */
+}
+
+/* Add padding and fix height for the inputs */
+input {
+    width: 100%;
+    padding: 10px; /* Increase padding for better usability */
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    outline: none;
+    height: 40px; /* Fixed height to prevent shifting */
+}
+
+    </style>
+</head>
+<!-- Include FontAwesome for the eye icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<body>
+
+    <h2>Register Admin</h2>
+    <form id="register-form">
+        <div>
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" name="full_name" required minlength="3" maxlength="50" placeholder="Enter your full name">
+            <span id="full_name-error" class="error-message"></span>
+        </div>
+    
+
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+            <span id="email-error" class="error-message"></span>
+        </div>
+    
+        <div>
+            <label for="contact_number">Contact Number</label>
+            <input type="tel" id="contact_number" name="contact_number" required title="Enter your contact number" oninput="removeNonNumeric()">
+            <span id="contact_number-error" class="error-message"></span>
+        </div>
+    
+        <div>
+            <label for="password">Password</label>
+            <div class="input-group">
+                <input type="password" id="password" name="password" required minlength="8" maxlength="30" placeholder="Enter your password">
+                <span class="input-group-text" onclick="togglePassword()">
+                    <i class="fa fa-eye-slash" id="toggle-password" style="color: black;"></i>
+                </span>
+            </div>
+            <span id="password-error" class="error-message"></span>
+        </div>
+    
+        <div></div>
+    
+        <div>
+            <label for="confirm_password">Confirm Password:</label>
+            <div class="input-group">
+                <input type="password" id="confirm_password" name="confirm_password" required minlength="8" maxlength="30" placeholder="Confirm your password">
+                <span class="input-group-text" onclick="toggleConfirmPassword()">
+                    <i class="fa fa-eye-slash" id="toggle-confirm-password" style="color: black;"></i>
+                </span>
+            </div>
+            <span id="confirm_password-error" class="error-message"></span>
+        </div>
+    
+        <div style="grid-column: span 2; display: flex; justify-content: center;">
+            <button type="submit">Register</button>
+        </div>
+    </form>
+    
+    <script>
+        document.getElementById("full_name").addEventListener("input", function () {
+            this.value = this.value.replace(/[^A-Za-z. ]+/g, '');
+        });
+    </script>
+    
+    <script>
+        // Function to remove non-numeric characters
+        function removeNonNumeric() {
+            const contactNumberInput = document.getElementById("contact_number");
+            // Remove all characters that are not digits (0-9)
+            contactNumberInput.value = contactNumberInput.value.replace(/\D/g, '');
+        }
+    </script>
+    
+    <script>
+        // Toggle password visibility function
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const toggleIcon = document.getElementById("toggle-password");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            }
+        }
+
+        // Toggle confirm password visibility function
+        function toggleConfirmPassword() {
+            const confirmPasswordInput = document.getElementById("confirm_password");
+            const toggleIcon = document.getElementById("toggle-confirm-password");
+
+            if (confirmPasswordInput.type === "password") {
+                confirmPasswordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            } else {
+                confirmPasswordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            }
+        }
+    </script>
+
+    <style>
+        /* Styling for input fields and eye icon */
+        .input-group {
+            position: relative;
+            width: 100%;
+        }
+        .input-group input {
+            padding-right: 30px; /* Create space for the icon */
+        }
+        .input-group .input-group-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
+
+    
+
+    <p id="message" class="message"></p>
+    
+    <a href="/login" id="home-button">Return Home</a>
+
+    <script>
+        document.getElementById("home-button").addEventListener("click", function (event) {
+            event.preventDefault(); // Pigilan ang default action ng link
+            sessionStorage.setItem("refreshLogin", "true"); // Maglagay ng flag para sa refresh
+            window.location.href = "/login"; // I-redirect sa login page
+        });
+    </script>
+    
+    
+    <!-- Include intl-tel-input JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script type="module" src="libs/js/register_admin.js"></script>
+
+</body>
+
+</html>

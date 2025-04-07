@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaRoom</title>
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./script.js"></script>
+</head>
+<body>
+
+<header id="home">
+  <nav>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#about">About</a></li>
+      <li><img onclick="msg()" src="https://raw.githubusercontent.com/arbiprog/casecraft/main/images/menu.png" draggable="false" alt=""></li>
+    </ul>
+    <div id="show">
+      <div class="cont-mn">
+        <img class="cmn" src="./libs/images/logo.png" alt=""> 
+        <img onclick="msg2()" class="close" src="https://raw.githubusercontent.com/arbiprog/casecraft/main/images/close.png" alt=""> 
+      </div>
+      <div class="links">
+        <div><a href="#home"> Home </a><img src="libs/images/arrow.png" alt=""></div>
+        <div><a href="#download"> Download </a><img src="libs/images/arrow.png" alt=""></div>
+        <div><a href="#about"> About </a><img src="libs/images/arrow.png" alt=""></div>
+      </div>
+    </div>
+    <div>
+      <img src="./libs/images/logo.png" draggable="false" alt="">
+    </div>
+  </nav>
+  <div class="container-div-prt">
+    <div class="prt st">
+      <img src="./libs/images/logo_page.png" draggable="false" alt="">
+    </div>
+    <div class="prt sd">
+      <div class="ris">
+        <h1>
+          <span>Quick</span> and <span>hassle-free</span> hotel <span>reservations</span>.
+
+        </h1>
+        <button class="btn" onclick="downloadApp()">
+          <img class="icon2" src="https://raw.githubusercontent.com/arbiprog/casecraft/main/images/icon2.png" alt="" style="margin-left: -10px;"> Download App
+        </button>        
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- About Section -->
+<section id="about" class="about">
+  <div class="div fir">
+    <h2>Welcome to InstaRoom</h2>
+    <p>InstaRoom simplifies hotel room scheduling and monitoring using QR codes and smartphones, offering a smooth and hassle-free booking experience.</p>
+    <img src="./images/shapes.png" alt="">
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+  <div class="ftr">
+    <h3>Your Gateway to</h3>
+    <h2>Effortless Hotel Booking</h2>
+    <h3 style="font-weight: 300;">Experience fast and secure room reservations with QR-based check-ins.</h3>
+  </div>
+  <div class="worker">
+    <img src="./libs/images/1.png" draggable="false" alt="">
+  </div>
+</section>
+
+<section class="features">
+  <div class="ftr">
+    <h3>Enjoy the benefits of</h3>
+    <h2>Smart Room Scheduling</h2>
+    <h3 style="font-weight: 300;">Book, manage, and monitor your hotel stays effortlessly through the app.</h3>
+  </div>
+  <div class="worker">
+    <img src="./libs/images/2.png" draggable="false" alt="">
+  </div>
+</section>
+<!-- Why Section -->
+<section class="why">
+  <div class="container-div-why">
+    <div class="dr">
+      <div class="tw">
+        <h3>Why Choose InstaRoom?</h3>
+        <p>Skip the long queues and enjoy the convenience of online hotel room booking with updates, secured transactions, and smart QR-based monitoring.</p>
+        <button class="btn" onclick="downloadApp()">
+          <img class="icon2" src="https://raw.githubusercontent.com/arbiprog/casecraft/main/images/icon2.png" alt=""> Download App
+        </button>        
+      </div>
+    </div>
+    <div class="dr">
+      <figure class="tw">
+        <img src="./libs/images/why_instaroom.png" draggable="false" alt="">
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- Download Section -->
+<section id="download" class="cta">
+  <div class="cont-btn">
+    <span>Get started now</span>
+    <button class="btn" onclick="downloadApp()">
+      <img class="i" src="https://raw.githubusercontent.com/arbiprog/casecraft/main/images/i2.png" alt="">
+      <span class="sp1">Download on the</span> <br>
+      <span class="sp2">Play Store</span>
+    </button>    
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="ftr-container">
+    <div class="fdb">
+      <img class="logo" src="./libs/images/logo.png" alt="">
+      <div>
+        <img src="./libs/images/gmail_icon.png" alt="Gmail" width="40">
+        <img src="./libs/images/facebook_icon.png" alt="Facebook" width="40">
+      </div>
+    </div>
+    <div>
+      <h2>Platform</h2>
+      <h5>Android</h5>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

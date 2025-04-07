@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Rooms</title>
+    <link rel="icon" type="image/png" href="/libs/image/logo.png">
+    <link rel="stylesheet" href="/libs/css/style.css"> 
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar" id="navbar">
+        <span class="menu-icon" id="menu-icon">&#9776;</span>
+        <h1></h1>
+
+        <div class="profile">
+            <button class="dropdown-btn">
+                <span id="profile-name"></span>
+                <i class="fa-sharp fa-solid fa-caret-down" id="caret-icon-nav"></i>
+            </button>
+            <!-- Dropdown Menu -->
+            <div class="dropdown-content" id="dropdown-content">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar" style="text-align: center;">
+    <img src="\libs\logo\logo.png" alt="Logo" class="logo" style="width: 200px; height: 200px; margin-top: 20px;">
+    <h2 style="margin-top: 10px; margin-bottom: 20px;">InstaRoom</h2>
+    
+    <a href="/dashboard" id="dashboardLink">Dashboard</a>
+    <a href="/users" id="manageGuestLink">Manage Guest</a>
+
+    <div class="menu-item">
+        <a href="#" class="submenu-toggle">
+            Rooms
+            <i class="fa-sharp fa-solid fa-caret-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="/rooms">Manage Rooms</a>
+            <a href="/room-settings">Room Settings</a>
+        </div>
+    </div>
+    
+    <div class="menu-item">
+        <a href="#" class="submenu-toggle">
+            Bookings
+            <i class="fa-sharp fa-solid fa-caret-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="/bookings">Booking List</a>
+            <a href="/booking-history">Checked-out History</a>
+            <a href="/feedback">Feedback</a>
+        </div>
+    </div>
+    
+    <div id="systemUsersSection" style="display: none;">
+        <a href="/system-users">System Users</a>
+    </div>
+
+    <a href="/profile">Profile</a>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var userLevel = localStorage.getItem("user_level"); // Fetch user level from storage
+        
+        if (userLevel == "1") {
+            document.getElementById("systemUsersSection").style.display = "block"; // Show System Users for Admin
+        } else if (userLevel == "2") {
+            document.getElementById("dashboardLink").style.display = "none"; // Hide Dashboard for Staff
+            document.getElementById("manageGuestLink").style.display = "none"; // Hide Manage Guest for Staff
+        }
+    });
+</script>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Content is here -->
+
+        <style>
+            .navbar h1 {
+                font-size: 25px;;
+            }
+           .form-container {
+            margin-top: -20px;
+            background-color: #DDB892; 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .form-control {
+                margin-bottom: 15px;
+            }
+           
+
+            select.form-control option {
+                background-color: #E8C9A9;  
+                color: #4F3E2A;
+            }
+            
+            select.form-control option:checked {
+            background-color: #D2B49C; 
+            color: #4F3E2A;            
+            }
+            
+            .table-container {
+            margin-top: 30px;
+            background-color: #DDB892; 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .table th, .table td {
+                padding: 12px;
+                text-align: left;
+            }
+            .table th {
+                background-color: #f2f2f2;
+            }
+            .table td {
+                background-color: #ffffff;
+            }
+            .btn-delete {
+                color: red;
+                cursor: pointer;
+            }
+            .btn-update {
+                color: blue;
+                cursor: pointer;
+            }
+
+            
+        </style>
+
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta2/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="modal fade" id="roomDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- modal-lg for a larger width -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Room Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <!-- First Column -->
+                        <div class="col-md-6">
+                            <p><strong>Room Letter:</strong> <span id="modalRoomLetter"></span></p>
+                            <p><strong>Room Number:</strong> <span id="modalRoomNumber"></span></p>
+                            <p><strong>Telephone Number:</strong> <span id="modalTelephoneNumber"></span></p>
+                            <p><strong>Room Type:</strong> <span id="modalRoomType"></span></p>
+                            <p><strong>Floor Level:</strong> <span id="modalFloorLevel"></span></p>
+                            <p><strong>Bed Type:</strong> <span id="modalBedType"></span></p>
+                            <p><strong>Number of Beds:</strong> <span id="modalNumberOfBeds"></span></p>
+                            <p><strong>Bed Occupancy:</strong> <span id="modalBedOccupancy"></span></p>
+                            <p><strong>Price:</strong> <span id="modalPrice"></span></p>
+                            <p><strong>Booking Status:</strong> <span id="modalBookingStatus"></span></p>
+                        </div>
+
+                        <!-- Second Column -->
+                        <div class="col-md-6">
+                            <p><strong>Room Size:</strong> <span id="modalRoomSize"></span></p>
+                            <p><strong>Adults Allowed:</strong> <span id="modalAdult"></span></p>
+                            <p><strong>Children Allowed:</strong> <span id="modalChildren"></span></p>
+                            <p><strong>Babies Allowed:</strong> <span id="modalBaby"></span></p>
+                            <p><strong>Max Adults:</strong> <span id="modalMaxAdults"></span></p>
+                            <p><strong>Max Children:</strong> <span id="modalMaxChildren"></span></p>
+                            <p><strong>Max Babies:</strong> <span id="modalMaxBabies"></span></p>
+                            <p><strong>Extra Bed Type:</strong> <span id="modalExtraBedType"></span></p>
+                            <p><strong>Extra Bed Price:</strong> <span id="modalExtraBedPrice"></span></p>
+                            <p><strong>Room Status:</strong> <span id="modalRoomStatus"></span></p>
+                            <p><strong>Booking Reference:</strong> <span id="modalBookingTransRef"></span></p>
+                            <p><strong>Room Power:</strong> <span id="modalRoomPower"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .text-danger {
+        display: block; /* Ginagawang block element */
+        margin-top: 5px; /* Pwede mong taasan depende sa gusto mong spacing */
+        color: #B52B37 !important; /* Kulay ng text */
+        font-size: 14px; /* Palitan mo depende sa gusto mong size */
+    }
+    
+    
+    </style>
+    
+    
+
+
+
+<!-- Room Management Form -->
+<div class="form-container">
+    <h2 id="form-title">Rooms</h2>
+    <form action="#" method="POST" id="room-form">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="room_letter">Room Letter:</label>
+                <select id="room_letter" class="form-control" name="room_letter" required>
+                    <option value="">Select Letter</option>
+                    <script>
+                        for (let i = 65; i <= 10; i++) {
+                            document.write(`<option value="${String.fromCharCode(i)}">${String.fromCharCode(i)}</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="room_number">Room Number:</label>
+                <select id="room_number" class="form-control" name="room_number" required>
+                    <option value="">Select Number</option>
+                    <script>
+                        for (let i = 1; i <= 10; i++) {
+                            document.write(`<option value="${i}">${i}</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="telephone_number">Telephone Number:</label>
+                <input type="text" id="telephone_number" class="form-control" name="telephone_number" placeholder="XXX-XXX-XXXX" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="room_type">Room Type:</label>
+                <select id="room_type" class="form-control" name="room_type" required>
+                    <option value="">Select Room Type</option>
+                    <option value="Standard Room">Standard Room</option>
+                    <option value="Family Room">Family Room</option>
+                    <option value="Deluxe Room">Deluxe Room</option>
+                    <option value="Suite Room">Suite Room</option>
+                    <option value="Triple Room">Triple Room</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="floor_level">Floor Level:</label>
+                <select id="floor_level" class="form-control" name="floor_level" required>
+                    <option value="">Select Floor Level</option>
+                    <script>
+                        for (let i = 1; i <= 500; i++) {
+                            let suffix = i === 1 ? 'st' : i === 2 ? 'nd' : i === 3 ? 'rd' : 'th';
+                            document.write(`<option value="${i}">${i}${suffix} Floor</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="bed_type">Bed Type:</label>
+                <select id="bed_type" class="form-control" name="bed_type" required>
+                    <option value="">Select Bed Type</option>
+                    <option value="Queen Bed">Queen Bed</option>
+                    <option value="Queen Bed + Twin Bed">Queen Bed + Twin Bed</option>
+                    <option value="King Bed">King Bed</option>
+                    <option value="King Bed + Sofa Bed">King Bed + Sofa Bed</option>
+                </select>
+
+                
+            </div>
+
+                <div class="col-md-3">
+                    <label for="bed_occupancy">Bed Occupancy:</label>
+                    <input type="number" id="bed_occupancy" class="form-control" name="bed_occupancy" min="1" placeholder="Enter Bed Occupancy" required>
+                    <span id="bed_occupancy-error" class="text-danger"></span> <!-- Error Message -->
+                </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="number_of_bed">Number of Beds:</label>
+                <input type="number" id="number_of_bed" class="form-control" name="number_of_bed" min="1" max="100" required oninput="validateMax(this)" placeholder="Enter Number of Beds">
+            </div>
+            <div class="col-md-4">
+                <label for="room_size">Room Size (sqm):</label>
+                <input type="number" id="room_size" class="form-control" name="room_size" min="1" max="100" required oninput="validateMax(this)" placeholder="Enter Room Size">
+            </div>
+            <div class="col-md-4">
+                <label for="room_price">Price:</label>
+                <select id="room_price" class="form-control" name="room_price" required>
+                    <option value="">Select Price</option>
+                    <option value="4000.00">4000.00</option>
+                    <option value="6000.00">6000.00</option>
+                    <option value="8000.00">8000.00</option>
+                    <option value="12000.00">12000.00</option>
+                    <option value="other">Other</option>
+                </select>
+                <input type="number" id="custom_price" class="form-control" name="custom_price" placeholder="Enter Custom Price" style="display:none;" />
+                <div id="room_price_error" class="text-danger" style="display: none;"></div>
+            </div>
+        </div>
+        <h5>Occupancy</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="max_occupancy">Max Occupancy:</label>
+                <input type="number" id="max_occupancy" class="form-control" name="max_occupancy" min="1" max="100" required placeholder="Enter Max Occupancy">
+                <span id="max_occupancy-error" class="text-danger"></span> <!-- Error Message -->
+        
+                <label>Number of Adults:</label>
+                <input type="number" id="adult" class="form-control" name="adult" min="1" max="100" required placeholder="Enter Number of Adults">
+                <span id="adult-error" class="text-danger"></span>
+        
+                <label>Max Adults:</label>
+                <input type="number" id="max_number_adult" class="form-control" name="max_number_adult" min="1" max="100" required placeholder="Enter Max Number of Adults">
+            </div>
+            <div class="col-md-4">
+                <label>Number of Children:</label>
+                <input type="number" id="children" class="form-control" name="children" min="0" max="100" required placeholder="Enter Number of Children">
+                <span id="children-error" class="text-danger"></span> <!-- Error Message -->
+        
+                <label>Max Children:</label>
+                <input type="number" id="max_number_children" class="form-control" name="max_number_children" min="0" max="100" required placeholder="Enter Max Number of Children">
+                <span id="max_number_children-error" class="text-danger"></span> <!-- Error Message -->
+        
+                <label for="extra_bed_type">Extra Bed Type:</label>
+                <select id="extra_bed_type" class="form-control" name="extra_bed_type" required>
+                    <option value="">Select Extra Bed Type</option>
+                    <option value="Single Bed">Single Bed</option>
+                    <option value="Rollaway Bed">Rollaway Bed</option>
+                    <option value="Crib">Crib</option>
+                    <option value="Single Bed + Crib">Single Bed + Crib</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Number of Babies:</label>
+                <input type="number" id="baby" class="form-control" name="baby" min="0" max="100" required placeholder="Enter Number of Babies">
+                <span id="baby-error" class="text-danger"></span> <!-- Error Message -->
+        
+                <label>Max Babies:</label>
+                <input type="number" id="max_number_baby" class="form-control" name="max_number_baby" min="0" max="100" required placeholder="Enter Max Number of Babies">
+                <span id="max_number_baby-error" class="text-danger"></span> <!-- Error Message -->
+        
+                <label for="extra_bed_price">Extra Bed Price:</label>
+                <select id="extra_bed_price" class="form-control" name="extra_bed_price" required>
+                    <option value="">Select Price</option>
+                    <option value="500.00">500.00</option>
+                    <option value="700.00">700.00</option>
+                    <option value="1000.00">1000.00</option>
+                    <option value="1500.00">1500.00</option>
+                    <option value="2000.00">2000.00</option>
+                    <option value="other">Other</option>
+                </select>
+                <input type="number" id="custom_extra_bed_price" class="form-control" name="custom_extra_bed_price" placeholder="Enter Custom Price" style="display:none;" />
+                <div id="extra_bed_price_error" class="text-danger" style="display: none;"></div>
+            </div>
+        </div>
+        
+
+        
+        <input type="text" id="booking_trans_ref" name="booking_trans_ref" hidden />
+        <button style="margin-top: 20px;" type="submit" class="btn btn-primary" id="add-room-btn">Add Room</button>
+        <button style="margin-top: 20px;" type="button" class="btn btn-success" id="update-room-btn">Update</button>
+        <button style="margin-top: 20px;" type="button" class="btn btn-secondary" id="clear-btn">Clear</button>
+
+    </form>
+</div>
+
+
+<!-- Rooms Table -->
+<div class="table-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; background-color: #deb887; padding: 10px;">
+        <h4 style="margin: 0;">Room Management</h4>
+
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; width: 25%;">
+            <button id="user-name-btn" style="background-color: #8b5e3c; color: white; padding: 5px 10px; border: none; cursor: pointer;">
+                ⇅ Room Type
+            </button>
+        </div>
+
+        <script>
+            let userNameSortAscending = true; // Track sorting order for User Name
+        
+            document.getElementById('user-name-btn').addEventListener('click', function () {
+                const tableBody = document.getElementById('room-table-body');
+                const rows = Array.from(tableBody.getElementsByTagName('tr'));
+        
+                rows.sort((a, b) => {
+                    const userA = a.cells[1]?.textContent.trim().toLowerCase() || ""; // Adjust index if needed
+                    const userB = b.cells[1]?.textContent.trim().toLowerCase() || "";
+                    return userNameSortAscending ? userA.localeCompare(userB) : userB.localeCompare(userA);
+                });
+        
+                rows.forEach(row => tableBody.appendChild(row));
+                userNameSortAscending = !userNameSortAscending; // Toggle sorting order
+            });
+        </script>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="floor-level">Floor Level:</label>
+            <select id="floor-level">
+                <option value="">Select Floor</option>
+            </select>
+            
+        
+            <label for="room-status">Room Status:</label>
+            <select id="room-status">
+                <option value="">Select Status</option>
+                <option value="Available">Available</option>
+                <option value="Occupied">Occupied</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Not Available">Not Available</option>
+            </select>
+        
+            <input type="text" id="search" placeholder="Search Rooms..." style="padding: 5px;">
+        </div>
+    </div>
+
+    <!-- Table displaying rooms -->
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Floor Level</th>
+                <th>Price</th>  
+                <th>Room Power</th>
+                <th>Room Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="room-table-body">
+            <!-- Room rows will be loaded here dynamically -->
+        </tbody>
+        
+    </div>
+
+</div>
+
+    
+  <script>
+    function validateMax(input) {
+        if (parseInt(input.value, 10) > 100) {
+            input.value = 100;
+        }
+    }
+</script>
+
+<script>
+    document.getElementById('telephone_number').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 10) value = value.slice(0, 10);
+        let formatted = value.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+        e.target.value = formatted;
+    });
+</script>
+
+<script>
+    function filterTable() {
+        const filter = document.getElementById('search').value.toLowerCase();
+        const rows = document.querySelectorAll("#admin-table-body tr");
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.hidden = !text.includes(filter);
+        });
+    }
+</script>
+
+<script type="module" src="/libs/js/rooms.js"></script>  
+
+<script src="/libs/js/script.js"></script>
+<script src="/libs/js/session.js"></script>
+
+
+</div>
+
+<script>
+    
+// Function to filter table rows based on selected floor level, status, and search query
+function filterTable() {
+    const selectedFloor = document.getElementById('floor-level').value.trim(); // Get value directly
+    const selectedStatus = document.getElementById('room-status').value.trim().toLowerCase();
+    const searchQuery = document.getElementById('search')?.value.trim().toLowerCase() || "";
+
+    const rows = document.querySelectorAll("#room-table-body tr");
+
+    let hasVisibleRows = false; // Track if any row is visible
+
+    rows.forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        if (cells.length < 6) return; // Skip rows with missing data
+
+        const floorLevel = cells[2]?.textContent.trim(); // Assuming floor level is in column 3 (index 2)
+        const roomStatusSelect = cells[5]?.querySelector(".room-status-select");
+        const roomStatus = roomStatusSelect ? roomStatusSelect.value.trim().toLowerCase() : ""; // Get selected value
+        const rowText = row.textContent.trim().toLowerCase();
+
+        // Normalize floor level comparison by removing the ordinal suffix (st, nd, rd, th)
+        const floorNumber = parseInt(floorLevel); // Convert floor level to a number
+
+        // Debugging Logs
+        console.log(`Row Data -> Floor: ${floorLevel}, Status: "${roomStatus}"`);
+        console.log(`Selected -> Floor: ${selectedFloor}, Status: "${selectedStatus}", Search: ${searchQuery}`);
+
+        // Room Status Dropdown Logic: Show all rows if "Select Status" or empty is selected
+        const isDefaultStatus = selectedStatus === "" || selectedStatus === "select status";
+        const matchFloor = !selectedFloor || floorNumber === parseInt(selectedFloor); // Compare only the floor number
+        const matchStatus = isDefaultStatus || roomStatus === selectedStatus;  
+        const matchSearch = !searchQuery || rowText.includes(searchQuery);
+
+        const shouldShow = matchFloor && matchStatus && matchSearch;
+
+        row.style.display = shouldShow ? "" : "none";
+        if (shouldShow) hasVisibleRows = true;
+    });
+
+    // Show message if no rows are visible
+    document.getElementById("no-results")?.remove();
+    if (!hasVisibleRows) {
+        const messageRow = document.createElement("tr");
+        messageRow.id = "no-results";
+        messageRow.innerHTML = `<td colspan="18" style="text-align:center; color:red;">No matching results found.</td>`;
+        document.querySelector("#room-table-body").appendChild(messageRow);
+    }
+}
+
+// Attach event listeners
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('floor-level').addEventListener('change', filterTable);
+    document.getElementById('room-status').addEventListener('change', filterTable); // Room status change
+    document.getElementById('search').addEventListener('input', filterTable);
+    document.getElementById('search-button')?.addEventListener('click', filterTable);
+});
+
+
+</script>
+
+
+
+
+</body>
+</html>

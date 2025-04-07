@@ -1,0 +1,16 @@
+php -S localhost:8000
+
+
+php -S 0.0.0.0:8000
+
+
+-- para sa delete admin --
+
+cd C:\xampp\htdocs\InstaRoom\libs\server
+
+node server.js
+
+
+cd C:\xampp\htdocs\InstaRoom\app
+
+node app/app.js

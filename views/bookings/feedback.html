@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <link rel="icon" type="image/png" href="/libs/image/logo.png">
+
+    <link rel="stylesheet" href="/libs/css/style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+    
+
+    
+    <!-- Navbar -->
+    <div class="navbar" id="navbar">
+        <span class="menu-icon" id="menu-icon">&#9776;</span>
+        <h1 class="hms"></h1>
+        <div class="profile">
+            <button class="dropdown-btn">
+                <span id="profile-name"></span>
+                <i class="fa-sharp fa-solid fa-caret-down" id="caret-icon-nav"></i>
+            </button>
+            <div class="dropdown-content" id="dropdown-content">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar" style="text-align: center;">
+    <img src="\libs\logo\logo.png" alt="Logo" class="logo" style="width: 200px; height: 200px; margin-top: 20px;">
+    <h2 style="margin-top: 10px; margin-bottom: 20px;">InstaRoom</h2>
+    
+    <a href="/dashboard" id="dashboardLink">Dashboard</a>
+    <a href="/users" id="manageGuestLink">Manage Guest</a>
+
+    <div class="menu-item">
+        <a href="#" class="submenu-toggle">
+            Rooms
+            <i class="fa-sharp fa-solid fa-caret-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="/rooms">Manage Rooms</a>
+            <a href="/room-settings">Room Settings</a>
+        </div>
+    </div>
+    
+    <div class="menu-item">
+        <a href="#" class="submenu-toggle">
+            Bookings
+            <i class="fa-sharp fa-solid fa-caret-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="/bookings">Booking List</a>
+            <a href="/booking-history">Checked-out History</a>
+            <a href="/feedback">Feedback</a> 
+        </div>
+    </div>
+    
+    <div id="systemUsersSection" style="display: none;">
+        <a href="/system-users">System Users</a>
+    </div>
+
+    <a href="/profile">Profile</a>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var userLevel = localStorage.getItem("user_level"); // Fetch user level from storage
+        
+        if (userLevel == "1") {
+            document.getElementById("systemUsersSection").style.display = "block"; // Show System Users for Admin
+        } else if (userLevel == "2") {
+            document.getElementById("dashboardLink").style.display = "none"; // Hide Dashboard for Staff
+            document.getElementById("manageGuestLink").style.display = "none"; // Hide Manage Guest for Staff
+        }
+    });
+</script>
+
+<!-- Modal Structure (Centered) -->
+<div class="modal fade" id="feedbackDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Feedback Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <!-- First Column -->
+                        <div class="col-md-6">
+                            <p><strong>Booking Reference:</strong> <span id="modalBookingTransRef"></span></p>
+                            <p><strong>Full Name:</strong> <span id="modalFeedbackFullName"></span></p>
+                            <p><strong>Email:</strong> <span id="modalFeedbackEmail"></span></p>
+                            <p><strong>Contact Number:</strong> <span id="modalFeedbackContact"></span></p>
+                            <p><strong>Room Number:</strong> <span id="modalFeedbackRoomNumber"></span></p>
+                            <p><strong>Room Type:</strong> <span id="modalFeedbackRoomType"></span></p>
+                            <p><strong>Rating:</strong> <span id="modalFeedbackRating"></span></p>
+                            <p><strong>Comment:</strong> <span id="modalFeedbackComment"></span></p>
+                        </div>
+
+                        <!-- Second Column -->
+                        <div class="col-md-6">
+                            <p><strong>Check-in Date:</strong> <span id="modalFeedbackCheckInDate"></span></p>
+                            <p><strong>Check-in Time:</strong> <span id="modalFeedbackCheckInTime"></span></p>
+                            <p><strong>Check-out Date:</strong> <span id="modalFeedbackCheckOutDate"></span></p>
+                            <p><strong>Check-out Time:</strong> <span id="modalFeedbackCheckOutTime"></span></p>
+                            <p><strong>Stay Duration:</strong> <span id="modalFeedbackStayDuration"></span></p>
+                            <p><strong>Timestamp:</strong> <span id="modalFeedbackTimestamp"></span></p>
+                            <p><strong>Feedback Display:</strong> <span id="modalFeedbackDisplay"></span></p> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0.0/jquery.qrcode.min.js"></script>
+
+
+<!-- QR Code Generator -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<!-- jsPDF and AutoTable Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+
+
+<div class="main-content" id="main-content">
+    <h2 style="font-size: 28px;">Feedback List</h2>
+
+    <div style="display: flex; gap: 12px; margin-bottom: 12px; align-items: center; flex-wrap: wrap;">
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search feedback..." 
+            style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; width: 250px; font-size: 16px;">
+
+        <button id="sort-user-name" onclick="sortTableByName()" 
+            style="background-color: #8b5e3c; color: white; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold;">
+            ⇅ Sort by User
+        </button>
+
+        <button id="sort-booking-ref" onclick="sortTableByBookingRef()" 
+            style="background-color: #a5724b; color: white; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold;">
+            ⇅ Sort by Booking Ref
+        </button>
+
+        <select id="rating_dropdown" onchange="filterTable()" 
+            style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px;">
+            <option value="All">All Ratings</option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
+        </select>
+
+        <select id="feedback_display" onchange="filterTable()" 
+            style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px;">
+            <option value="all">All Feedback</option>
+            <option value="show">Show</option>
+            <option value="hide">Hide</option>
+        </select>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking Reference</th>
+                <th>Full Name</th>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Feedback Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="booking-feedbacks">
+            <!-- Feedback requests will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let nameSortOrder = "asc";
+    let bookingRefSortOrder = "asc";
+
+    function sortTableByName() {
+        const tableBody = document.getElementById("booking-feedbacks");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        rows.sort((rowA, rowB) => {
+            const nameA = rowA.cells[1].textContent.trim().toLowerCase();
+            const nameB = rowB.cells[1].textContent.trim().toLowerCase();
+            return nameSortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+        });
+
+        nameSortOrder = nameSortOrder === "asc" ? "desc" : "asc";
+        rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    function sortTableByBookingRef() {
+        const tableBody = document.getElementById("booking-feedbacks");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        rows.sort((rowA, rowB) => {
+            const refA = rowA.cells[0].textContent.trim();
+            const refB = rowB.cells[0].textContent.trim();
+            return bookingRefSortOrder === "asc" ? refA.localeCompare(refB) : refB.localeCompare(refA);
+        });
+
+        bookingRefSortOrder = bookingRefSortOrder === "asc" ? "desc" : "asc";
+        rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    function filterTable() {
+    const searchInput = document.getElementById("searchInput").value.toLowerCase().trim();
+    const ratingFilter = document.getElementById("rating_dropdown").value.toLowerCase().trim();
+    const feedbackStatusFilter = document.getElementById("feedback_display").value.toLowerCase().trim();
+    const rows = document.querySelectorAll("#booking-feedbacks tr");
+
+    rows.forEach(row => {
+        const ratingCell = row.cells[4].textContent.trim();
+        const rating = parseFloat(ratingCell); // Convert the rating text to a float
+        
+        // Custom rounding logic for the rating
+        let roundedRating;
+        if (rating >= 1 && rating < 2) {
+            roundedRating = 1;
+        } else if (rating >= 2 && rating < 3) {
+            roundedRating = 2;
+        } else if (rating >= 3 && rating < 4) {
+            roundedRating = 3;
+        } else if (rating >= 4 && rating < 5) {
+            roundedRating = 4;
+        } else if (rating === 5) {
+            roundedRating = 5;
+        }
+
+        const feedbackDropdown = row.cells[6].querySelector("select");
+const feedbackStatus = feedbackDropdown ? feedbackDropdown.value.toLowerCase().trim() : "";
+
+
+        // The row's full text for search filter
+        const rowText = row.textContent.toLowerCase();
+
+        // Filter conditions
+        const matchRating = (ratingFilter === "all" || roundedRating === parseInt(ratingFilter));
+        const matchFeedbackStatus = (feedbackStatusFilter === "all" || 
+                                     (feedbackStatusFilter === "show" && feedbackStatus === "show") || 
+                                     (feedbackStatusFilter === "hide" && feedbackStatus === "hide"));
+        const matchSearch = rowText.includes(searchInput);
+
+        // Apply the filtering: show or hide row based on matching conditions
+        row.style.display = (matchRating && matchFeedbackStatus && matchSearch) ? "" : "none";
+    });
+}
+
+</script>
+
+
+
+<style>
+
+    .hms {
+        font-size: 14px; /* Increased font size */
+    }
+    
+    /* Table Styling */
+    .table {
+        width: 84.4%;
+        margin-top: 12px;
+        border-collapse: collapse;
+        font-family: 'Montserrat', sans-serif;
+        border: 1px solid #000;
+        background-color: #F5F5DC;
+        table-layout: auto;
+    }
+    
+    /* Main Content Box */
+    .main-content {
+        background-color: #E0C29D;
+        padding: 12px;
+        border-radius: 6px;
+        margin: 0px auto;
+        width: 100%;
+        overflow-x: auto;
+        box-sizing: border-box;
+    }
+    
+    
+    /* Adjust padding for table cells */
+    .table th, .table td {
+        padding: 12px; /* Increased padding */
+        border: 1px solid #ddd;
+        text-align: left;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+    
+    
+    /* Table Header */
+    .table th {
+        background-color: #A67C52;
+        color: #FFF;
+        text-align: center !important;
+        font-size: 16px; /* Increased font size */
+    }
+    
+    /* Table Data */
+    .table td {
+        text-align: center;
+        font-size: 14px; /* Increased font size */
+    }
+    
+    /* Specific widths for some columns */
+    .table th:nth-child(1),
+    .table td:nth-child(1) { width: 8%; }
+    
+    .table th:nth-child(2),
+    .table td:nth-child(2) { width: 8%; }
+    
+    .table th:nth-child(3),
+    .table td:nth-child(3) { width: 8%; }
+    
+    .table th:nth-child(4),
+    .table td:nth-child(4) { width: 8%; }
+    
+    .table th:nth-child(5),
+    .table td:nth-child(5) { width: 8%; }
+    
+    .table th:nth-child(6),
+    .table td:nth-child(6) { width: 40%; text-align: justify; }
+    
+    .table th:nth-child(7),
+    .table td:nth-child(7) { width: 8%; }
+    
+    /* Buttons */
+    .btn {
+        margin: 6px; /* Adjusted margin */
+        padding: 8px 14px; /* Adjusted padding */
+        border: none;
+        cursor: pointer;
+        font-size: 12px; /* Increased font size */
+        border-radius: 4px;
+    }
+    
+    /* Success Button */
+    .btn-success {
+        background-color: #28a745;
+        color: #FFF;
+    }
+    
+    /* Danger Button */
+    .btn-danger {
+        background-color: #dc3545;
+        color: #FFF;
+    }
+    
+    /* Input fields */
+    input, select, button {
+        font-size: 14px; /* Increased font size */
+    }
+    </style>
+    
+
+<!-- JavaScript to fetch and handle subscription requests -->
+<script type="module" src="/libs/js/feedback.js"></script>
+
+<script src="/libs/js/script.js"></script>
+<script src="/libs/js/session.js"></script>
+
+</body>
+</html>

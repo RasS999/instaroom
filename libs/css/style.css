@@ -1,0 +1,656 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    zoom: 0.92;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F6F6F8;
+}
+.modal-backdrop {
+    background-color: black ; /* Force solid black */
+    position: fixed ;
+    top: 0 ;
+    left: 0 ;
+    width: 400vw !important;
+    height: 400vh !important ;
+    opacity: 1 ;
+    z-index: 99999 ; /* Make sure it's above everything */
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #BF8C5D;
+    padding: 0.5rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3 !important;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.navbar.shifted {
+    width: calc(100% - 280px); /* Adjust width to account for sidebar */
+    left: 280px;
+}
+
+.navbar .menu-icon {
+    margin-left: 15px;
+    font-size: 1.5rem;
+    color: #000;
+    cursor: pointer;
+}
+
+.navbar h1 {
+    font-size: 1.2rem;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Ensure smooth flipping of the icon */
+#caret-icon-nav {
+    transition: transform 0.3s ease;  /* Smooth flip effect */
+}
+
+/* When the dropdown button is clicked, flip the icon */
+.dropdown-btn.flip #caret-icon-nav {
+    transform: rotate(180deg);  /* Flip the icon */
+}
+
+/* Show the dropdown content when it has the 'show' class */
+#dropdown-content {
+    display: none;
+}
+
+#dropdown-content.show {
+    display: block;
+}
+
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    margin-top: -57px;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: #ceaa86;
+    color: white;
+    padding: 20px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 5px 3px #BF8C5D;
+    text-align: center;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar .logo {
+    max-width: 100%; 
+    height: auto;
+    margin-top: 10px;
+}
+
+.sidebar h2 {
+    font-weight: bold;
+    margin-top: 20px;
+    color: #fff;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+/* Sidebar Links */
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    border-radius: 20px; /* Rounded corners by default */
+}
+
+.sidebar a:hover {
+    background-color: #9e744d;
+}
+
+/* Submenu */
+.submenu {
+    display: none;
+    background-color: #9e744d;
+}
+
+.submenu a {
+    padding-left: 20px;
+    display: block;
+}
+
+.menu-item.active .submenu {
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        margin-top: -87px;
+        width: 220px;
+    }
+    
+    .sidebar .logo {
+        width: 150px; /* Adjust logo size for mobile */
+    }
+}
+
+
+/* Adjust the icon position */
+#caret-icon-1, #caret-icon-2, #caret-icon-3, #caret-icon-4 {
+    margin-left: 140px;  /* Push the icon to the right */
+    transition: transform 0.3s ease, margin-left 0.3s ease;
+}
+
+/* When the icon is flipped */
+.submenu-toggle.flip #caret-icon-1,
+.submenu-toggle.flip #caret-icon-2,
+.submenu-toggle.flip #caret-icon-3,
+.submenu-toggle.flip #caret-icon-4
+{
+    transform: rotate(180deg);  /* Flip the icon */
+    margin-left: auto;  /* Keep it on the right side */
+}
+
+/* Adjust the icon position */
+.submenu-toggle i {
+    margin-left: auto;  /* Push the icon to the right */
+    transition: transform 0.3s ease, margin-left 0.3s ease;
+}
+
+/* When the icon is flipped */
+.submenu-toggle.flip i {
+    transform: rotate(180deg);  /* Flip the icon */
+    margin-left: auto;  /* Keep it on the right side */
+}
+
+
+.sidebar a:hover {
+    background-color: #9e744d;
+}
+
+/* Submenu */
+.submenu {
+    display: none;
+    background-color: #f0f0f0; /* Grey background for each submenu */
+}
+
+
+.submenu a {
+    padding-left: 20px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    color: #fff; /* Dark text color for better readability */
+    transition: background-color 0.3s ease;
+}
+
+/* Initial position for the caret icon */
+.submenu-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Ensures the menu item takes up the full width */
+    padding-right: 20px; /* Adds space for the caret icon on the right */
+}
+
+/* When the icon is flipped and moved to the right */
+.submenu-toggle.flip #caret-icon {
+    transform: rotate(180deg); /* Flip the icon */
+    margin-left: auto; /* Move the icon to the right */
+}
+
+/* Hover effect on submenu links */
+.submenu a:hover {
+    background-color: #9e744d; /* Slightly darker grey when hovered */
+}
+
+/* Adjust the menu-item background when active */
+.menu-item.active .submenu {
+    display: block;
+    background-color: #9e744d; /* Slightly darker grey for the active submenu */
+}
+
+
+
+/* Active class for showing submenu */
+.menu-item.active .submenu {
+    display: block;
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    padding: 2rem 1rem 1rem 1rem;
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+    overflow-y: auto;
+
+    background-color: #F6F6F8;
+}
+
+.main-content.shifted {
+    margin-left: 280px; /* Account for sidebar width */
+}
+
+.main-content h1 {
+    color: #FF3B30;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Flexbox Layout */
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 60px);
+}
+
+
+/* Profile and Dropdown Styles */
+.profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background-color: #FFFFFF;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    min-width: 220px;
+    margin-right: 20px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+/* Profile Styles */
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Adjust gap for spacing */
+    background-color: #FFFFFF;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    min-width: 10px;
+}
+
+.navbar .profile span {
+    font-size: 0.9rem;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Handles long names with ellipsis */
+}
+
+/* Dropdown Styles */
+.dropdown-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Keep the gap for dropdown icon */
+    padding: 0.3rem;
+    border-radius: 18px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; /* Move the dropdown content below the dropdown button */
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    min-width: 140px;
+    z-index: 1;
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.dropdown-content a {
+    color: #4F3E2A;
+    padding: 10px 14px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar h1 {
+        font-size: 1rem;
+    }
+
+    .sidebar {
+        width: 180px;
+    }
+
+    .main-content {
+        padding: 2rem 0.5rem;
+    }
+
+    .navbar.shifted {
+        width: calc(100% - 180px); 
+        left: 180px;
+    }
+
+    .main-content.shifted {
+        margin-left: 180px;
+    }
+
+    .wrapper {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .sidebar-wrapper {
+        width: 100%;
+    }
+
+    .main-content-wrapper {
+        width: 100%;
+    }
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1000;
+}
+
+.main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+input:checked + .slider {
+    background-color: #BF8C5D;
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #4F3E2A;
+    color: #e0e0e0;
+}
+
+.navbar.dark-mode {
+    background-color: #4F3E2A;
+}
+
+.sidebar.dark-mode {
+    background-color: #4F3E2A;
+    color: #fff;
+}
+
+.sidebar.dark-mode a {
+    color: #ccc;
+}
+
+.sidebar.dark-mode a:hover {
+    background-color: #444444;
+}
+
+.card-dashboard.dark-mode {
+    background-color: #4F3E2A;
+    border: 1px solid #444444;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar h1 {
+        font-size: 1rem;
+    }
+
+    .sidebar {
+        width: 180px;
+    }
+
+    .main-content {
+        padding: 2rem 0.5rem;
+    }
+
+    .navbar.shifted {
+        width: calc(100% - 180px); 
+        left: 180px;
+    }
+
+    .main-content.shifted {
+        margin-left: 180px;
+    }
+
+    .wrapper {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .sidebar-wrapper {
+        width: 100%;
+    }
+
+    .main-content-wrapper {
+        width: 100%;
+    }
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1000;
+}
+
+.main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+input:checked + .slider {
+    background-color: #BF8C5D;
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #4F3E2A;
+    color: #e0e0e0;
+}
+
+.navbar.dark-mode {
+    background-color: #1f1f1f;
+}
+
+.sidebar.dark-mode {
+    background-color: #333333;
+    color: #fff;
+}
+
+.sidebar.dark-mode a {
+    color: #ccc;
+}
+
+.sidebar.dark-mode a:hover {
+    background-color: #4F3E2A;
+}
+
+.card-dashboard.dark-mode {
+    background-color: #4F3E2A;
+    border: 1px solid #4F3E2A;
+}
+
+.btn-primary,
+.btn-warning,
+.btn-danger {
+  background-color: #8b5e3c!important;
+  border-color: #BF8D5C !important;
+}
+
+.btn-primary:hover,
+.btn-warning:hover,
+.btn-danger:hover {
+  background-color: #be8c5c !important;
+  border-color: #be8c5c!important;
+}
+
+#update-room-btn {
+    background-color: #8b5e3c !important; /* Bootstrap danger red */
+    border-color: #8b5e3c !important;
+  }
+  
+  #update-room-btn:hover {
+    background-color: #be8c5c !important;
+    border-color: #be8c5c !important;
+  }
+  
+
+  #clear-btn {
+    background-color: #a5724b !important; /* Bootstrap danger red */
+    border-color: #a5724b !important;
+  }
+  
+  #clear-btn:hover {
+    background-color: #8b5e3c !important;
+    border-color: #8b5e3c !important;
+  }
+
+  
+  select {
+    background-color: #8B5A2B; /* Dark Brown */
+    color: white;
+    border: 1px solid #654321; /* Optional: Add a border */
+}
+
+select option {
+    background-color: white; /* Default background for unselected options */
+    color: black;
+}
+
+select:hover {
+    background-color: #8B5A2B; /* Dark Brown on hover */
+    color: white;
+}
+
+select option:hover,
+select option:focus {
+    background-color: #8B5A2B !important; /* Dark Brown on hover */
+    color: white !important;
+}
+
+select option:checked {
+    background-color: #8B5A2B !important; /* Dark Brown */
+    color: white !important;
+}
