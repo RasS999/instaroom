@@ -7,7 +7,6 @@
     "firebase-admin": "^13.2.0"
   },
   "scripts": {
-    "dev": "node server.js",
-    "build": "echo 'No build step required for this project'"
+    "dev": "node server.js"
   }
 }
