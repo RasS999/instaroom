@@ -8,7 +8,6 @@
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "build": "echo 'No build step required for this project'"
+    "dev": "node server.js"
   }
 }
