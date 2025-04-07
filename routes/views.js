@@ -5,79 +5,67 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const path = require('path');
 
-// Function to safely serve HTML files and handle errors
-function servePage(res, pagePath) {
-    const filePath = path.join(__dirname, '/../views', pagePath);
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            res.status(500).send('Error loading page: ' + err.message);
-        }
-    });
-}
-
 // Login page (no auth required)
 router.get('/login', (req, res) => {
-    servePage(res, 'login/index.html');
+    res.sendFile(path.join(__dirname, '/../views/login/index.html')); // Login page
 });
 
 // Register Admin page (no auth required)
 router.get('/register', (req, res) => {
-    servePage(res, 'register/register_admin.html');
+    res.sendFile(path.join(__dirname, '/../views/register/register_admin.html')); // Register Admin page
 });
 
 // Forgot Password page (no auth required)
 router.get('/forgot-password', (req, res) => {
-    servePage(res, 'forgot_password/forgot_password.html');
+    res.sendFile(path.join(__dirname, '/../views/forgot_password/forgot_password.html')); // Forgot Password page
 });
 
 // Default route for root access
 router.get('/', (req, res) => {
-    res.redirect('/login'); // Redirect to the login route
+    res.redirect('/login'); // Redirect to the cleaner login route
 });
 
-// Dashboard (auth required)
+// Dashboard
 router.get('/dashboard', authMiddleware, (req, res) => {
-    servePage(res, 'dashboard/dashboard.html');
+    res.sendFile(path.join(__dirname, '/../views/dashboard/dashboard.html'));  // Serving the dashboard
 });
 
-// Users Management (auth required)
+// Users Management
 router.get('/users', authMiddleware, (req, res) => {
-    servePage(res, 'users/manage_user.html');
+    res.sendFile(path.join(__dirname, '/../views/users/manage_user.html'));  // Users page
 });
 
-// Bookings (auth required)
+// Bookings
 router.get('/bookings', authMiddleware, (req, res) => {
-    servePage(res, 'bookings/bookings.html');
+    res.sendFile(path.join(__dirname, '/../views/bookings/bookings.html')); // Bookings page
 });
 
-// Booking History (auth required)
 router.get('/booking-history', authMiddleware, (req, res) => {
-    servePage(res, 'bookings/booking_history.html');
+    res.sendFile(path.join(__dirname, '/../views/bookings/booking_history.html'));  // Booking History page
 });
 
-// Feedback (auth required)
+// Feedback
 router.get('/feedback', authMiddleware, (req, res) => {
-    servePage(res, 'bookings/feedback.html');
+    res.sendFile(path.join(__dirname, '/../views/bookings/feedback.html'));  // Feedback page
 });
 
-// Rooms (auth required)
+// Rooms
 router.get('/rooms', authMiddleware, (req, res) => {
-    servePage(res, 'rooms/manage_rooms.html');
+    res.sendFile(path.join(__dirname, '/../views/rooms/manage_rooms.html'));  // Rooms page
 });
 
-// Room Settings (auth required)
 router.get('/room-settings', authMiddleware, (req, res) => {
-    servePage(res, 'rooms/room_settings.html');
+    res.sendFile(path.join(__dirname, '/../views/rooms/room_settings.html'));  // Room Settings page
 });
 
-// System Users (auth required)
+// System Users
 router.get('/system-users', authMiddleware, (req, res) => {
-    servePage(res, 'system_users/manage_system_user.html');
+    res.sendFile(path.join(__dirname, '/../views/system_users/manage_system_user.html'));  // System Users page
 });
 
-// Profile (auth required)
+// Profile
 router.get('/profile', authMiddleware, (req, res) => {
-    servePage(res, 'profile/profile.html');
+    res.sendFile(path.join(__dirname, '/../views/profile/profile.html'));  // Profile page
 });
 
 module.exports = router;

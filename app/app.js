@@ -1,4 +1,4 @@
-// app/app.js
+// app\app.js
 
 const express = require('express');
 const path = require('path');
@@ -7,20 +7,18 @@ const session = require('express-session');
 const admin = require('firebase-admin');
 const app = express();
 
-require('dotenv').config(); // Load environment variables from .env file
-
-// Initialize Firebase Admin SDK with environment variables
+// Initialize Firebase Admin SDK
 const serviceAccount = require(path.join(__dirname, 'firebase-credentials.json'));
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: process.env.FIREBASE_DB_URL // Use the database URL from the .env file
+    databaseURL: 'https://insta-room-4b79a-default-rtdb.firebaseio.com'
 });
 
 // Middleware for session and CORS
 app.use(express.json());
 app.use(cors());
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Use session secret from the .env file
+    secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // Ensure cookies are not secure for local development
@@ -79,8 +77,8 @@ app.post('/set-session', (req, res) => {
 const viewRoutes = require('../routes/views');
 app.use('/', viewRoutes);  // Main route for views (without '/views' prefix)
 
-// Start the server on the port specified in the .env file (or default to 5001)
-const PORT = process.env.PORT || 5001;
+// Start the server on port 5001
+const PORT = 5001;
 app.listen(PORT, () => {
     console.log(`Server running on http://127.0.0.1:${PORT}`);
 });
