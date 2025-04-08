@@ -114,12 +114,15 @@ function login() {
                                         window.location.href = '/dashboard';
                                     }
                                 } else {
-                                    alert('Failed to set session. Please try again.');
+                                    return response.json().then(errorData => {
+                                        console.error('Session setup failed:', errorData);
+                                        alert('Failed to set session. Please contact support if the issue persists.');
+                                    });
                                 }
                             })
                             .catch(error => {
                                 console.error('Error setting session:', error);
-                                alert('Failed to set session. Please try again.');
+                                alert('An unexpected error occurred while setting the session. Please try again later.');
                             });
                         }
                         else {
