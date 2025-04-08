@@ -93,11 +93,8 @@ function login() {
                         localStorage.setItem('user_level', userData.user_level || '');
                         localStorage.setItem('user_status', userData.user_status || '');
                     
-                        // Set session data via API with retry mechanism
-                        setSessionWithRetry(user.uid, email, userData.user_level, userData.full_name || '');
-
                         // Successful login alert
-                        alert('Login successful! Welcome, ' + userData.full_name || email + '.');
+                        alert('Login successful! Welcome, ' + (userData.full_name || email) + '.');
                     }
                     else {
                         alert('No user data found.');
@@ -146,23 +143,31 @@ function login() {
 
         // Lockout mechanism if too many failed attempts
         if (failedAttempts >= maxFailedAttempts) {
+            if (lockoutTimer) {
+                clearTimeout(lockoutTimer);
+            }
             lockoutTimer = setTimeout(() => {
                 failedAttempts = 0; // Reset failed attempts after lockout period
                 alert('You can try logging in again now.');
             }, lockoutTime);
         }
     });
-
+}
 
 function sendLoginFailureEmail(email) {
     // For simplicity, assuming you send a failure notification email to an admin or logging service
-    const full_name = 'Unknown'; // You can adjust this based on your user data
+    const full_name = 'Unknown'; // Adjust if necessary
     fetch('http://localhost:8000/send_email_login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `email=${encodeURIComponent(email)}&full_name=${encodeURIComponent(full_name)}`
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to send login failure email.');
+        }
+        return response.text();
+    })
     .then(data => {
         console.log('Login failure email sent:', data);
     })
@@ -172,49 +177,11 @@ function sendLoginFailureEmail(email) {
     });
 }
 
-function setSessionWithRetry(userId, email, userLevel, fullName, retries = 3) {
-    fetch('/set-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, email, userLevel, fullName })
-    })
-    .then(response => {
-        if (response.ok) {
-            // Redirect based on user level
-            if (userLevel == 2) {
-                window.location.href = '/bookings';
-            } else {
-                window.location.href = '/dashboard';
-            }
-        } else {
-            return response.json().then(errorData => {
-                console.error('Session setup failed:', errorData);
-                if (retries > 0) {
-                    console.warn(`Retrying session setup (${3 - retries + 1}/3)...`);
-                    setSessionWithRetry(userId, email, userLevel, fullName, retries - 1);
-                } else {
-                    alert('Failed to set session after multiple attempts. Please contact support.');
-                }
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error setting session:', error);
-        if (retries > 0) {
-            console.warn(`Retrying session setup (${3 - retries + 1}/3)...`);
-            setSessionWithRetry(userId, email, userLevel, fullName, retries - 1);
-        } else {
-            alert('An unexpected error occurred while setting the session. Please try again later.');
-        }
-    });
-}
-
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log('User is signed in:', user.email);
+        // You can also verify and update session data here
     } else {
         console.log('No user is signed in.');
     }
 });
-
-}
