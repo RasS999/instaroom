@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/views/login/index.html" },
-    { "source": "/set-session", "destination": "/views/set-session.html" }
+    { "source": "/", "destination": "/views/login/index.html" }
   ]
 }
