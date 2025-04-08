@@ -8,6 +8,14 @@
   ],
   "routes": [
     {
+      "src": "/views/(.*)",
+      "dest": "/views/$1"
+    },
+    {
+      "src": "/libs/(.*)",
+      "dest": "/libs/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "app.js"
     }
