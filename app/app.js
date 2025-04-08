@@ -24,7 +24,7 @@ app.use(session({
 }));
 
 // Static files
-app.use('/libs', express.static(path.resolve(__dirname, '../libs')));
+app.use('/libs', express.static(path.resolve(__dirname, 'libs')));
 
 // Views redirection
 app.use('/views', (req, res, next) => {
@@ -56,8 +56,22 @@ app.post('/set-session', (req, res) => {
 });
 
 // Routes
-const viewRoutes = require('../routes/views'); // adjust path if needed
+const viewRoutes = require('./routes/views'); // adjust path if needed
 app.use('/', viewRoutes);
 
-// Export the app as a handler
+// Catch-all route (for client-side routing like React or Vue apps)
+app.all('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Adjust based on your app structure
+});
+
+// Export the app as a handler (for serverless function)
 module.exports = app;
+
+// Vercel's platform will automatically handle the serverless environment for you.
+// If testing locally, you can start the app like this:
+if (require.main === module) {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
