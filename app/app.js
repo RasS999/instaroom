@@ -30,11 +30,13 @@ app.use('/libs', express.static(path.resolve(__dirname, '../libs'))); // Ensure 
 // Redirect old '/views/...' URLs to the new cleaner routes
 app.use('/views', (req, res, next) => {
     const urlMapping = {
-        '/bookings/booking_history.html': '/booking-history',
+'/bookings/booking_history.html': '/booking-history',
         '/bookings/bookings.html': '/bookings',
         '/bookings/feedback.html': '/feedback',
-        '/dashboard/dashboard.html': '/dashboard',
+        '/bookings/all_transaction_report.html': '/all-transaction-report',
         '/users/manage_user.html': '/users',
+        '/users/user_report_and_analysis.html': '/user-report-and-analysis',
+        '/dashboard/dashboard.html': '/dashboard',
         '/rooms/manage_rooms.html': '/rooms',
         '/rooms/room_settings.html': '/room-settings',
         '/system_users/manage_system_user.html': '/system-users',
@@ -46,7 +48,6 @@ app.use('/views', (req, res, next) => {
     if (newPath) {
         return res.redirect(newPath);
     }
-
     next(); // If no mapping is found, proceed to the next middleware
 });
 

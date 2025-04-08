@@ -35,6 +35,11 @@ router.get('/users', authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '/../views/users/manage_user.html'));  // Users page
 });
 
+// User Report and Analysis under Users
+router.get('/user-report-and-analysis', authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, '/../views/users/user_report_and_analysis.html')); // User Report and Analysis page
+});
+
 // Bookings
 router.get('/bookings', authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '/../views/bookings/bookings.html')); // Bookings page
@@ -47,6 +52,11 @@ router.get('/booking-history', authMiddleware, (req, res) => {
 // Feedback
 router.get('/feedback', authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '/../views/bookings/feedback.html'));  // Feedback page
+});
+
+// All Transaction Report under Bookings
+router.get('/all-transaction-report', authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, '/../views/bookings/all_transaction_report.html')); // All Transaction Report page
 });
 
 // Rooms
