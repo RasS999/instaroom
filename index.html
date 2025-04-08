@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page for Vercel App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-box {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #0070f3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the Test Page!</h1>
+
+    <div class="test-box">
+        <h2>Test Button Interaction</h2>
+        <button id="testButton">Click Me!</button>
+        <p class="status" id="statusMessage">Status: Waiting for action...</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test JavaScript Functionality</h2>
+        <p>Current Time: <span id="currentTime">Loading...</span></p>
+    </div>
+
+    <script>
+        // Change status message on button click
+        document.getElementById('testButton').addEventListener('click', function() {
+            document.getElementById('statusMessage').textContent = 'Status: Button was clicked!';
+        });
+
+        // Display current time
+        function updateTime() {
+            const currentTime = new Date().toLocaleTimeString();
+            document.getElementById('currentTime').textContent = currentTime;
+        }
+        setInterval(updateTime, 1000); // Update every second
+    </script>
+
+</body>
+</html>
