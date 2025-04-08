@@ -1,0 +1,23 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# If the requested file or directory exists, skip rewriting
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Clean URLs: redirect /login to /views/login/index.html
+RewriteRule ^login$ views/login/index.html [L]
+RewriteRule ^dashboard$ views/dashboard/dashboard.html [L]
+RewriteRule ^profile$ views/profile/profile.html [L]
+RewriteRule ^bookings$ views/bookings/bookings.html [L]
+RewriteRule ^booking-history$ views/bookings/booking_history.html [L]
+RewriteRule ^feedback$ views/bookings/feedback.html [L]
+RewriteRule ^all-transaction-report$ views/bookings/all_transaction_report.html [L]
+RewriteRule ^rooms$ views/rooms/manage_rooms.html [L]
+RewriteRule ^room-settings$ views/rooms/room_settings.html [L]
+RewriteRule ^users$ views/users/manage_user.html [L]
+RewriteRule ^user-report-and-analysis$ views/users/user_report_and_analysis.html [L]
+RewriteRule ^system-users$ views/system_users/manage_system_user.html [L]
+
+# Optional: fallback to index.html or 404
+# RewriteRule ^.*$ index.html [L]
