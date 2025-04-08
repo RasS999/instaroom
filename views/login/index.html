@@ -3,309 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="icon" type="image/png" href="/libs/image/logo.png">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" crossorigin="anonymous">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>ASD Test Page for Vercel App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-box {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #0070f3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
-
 <body>
-    <div id="login-page">
-        <div class="login">
-            <img src="/libs/image/logo.png" alt="Logo" class="logo">
-            <h2 class="login-title">InstaRoom</h2> 
-            <h5 class="login-title">Hotel Management System</h5>
-            <p class="notice">Please login to access the system</p>
-            <form class="form-login" id="loginForm">
-                <div class="mb-3">
-                    <label for="email" class="form-label">E-mail</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your e-mail" required>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-                        <span class="input-group-text" id="eyeIcon" style="cursor: pointer;">
-                            <i class="fa-solid fa-eye-slash"></i>
-                        </span>
-                    </div>
-                </div>
-                <button type="submit" id="loginBtn" class="btn btn-primary w-100">Login</button>
-            </form>
-            
-            <a href="/forgot-password">Forgot your password?</a>
-            <p class="mt-2" style="margin-top: 20px"><a href="/register">Create an account</a></p>
-            
-        </div>
-        <div class="background">
-            <!-- Background for website -->
-        </div>
+
+    <h1>Welcome to the Test Page!</h1>
+
+    <div class="test-box">
+        <h2>Test Button Interaction</h2>
+        <button id="testButton">Click Me!</button>
+        <p class="status" id="statusMessage">Status: Waiting for action...</p>
     </div>
-    <!-- Firebase JS SDK (Version 9+) -->
-    <script type="module" src="/libs/js/login.js"></script>
+
+    <div class="test-box">
+        <h2>Test JavaScript Functionality</h2>
+        <p>Current Time: <span id="currentTime">Loading...</span></p>
+    </div>
 
     <script>
-        // Toggle password visibility
-        const eyeIcon = document.getElementById("eyeIcon");
-        const passwordInput = document.getElementById("password");
-
-        eyeIcon.addEventListener("click", function() {
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                eyeIcon.innerHTML = '<i class="fa-solid fa-eye"></i>'; // Change icon back to "eye"
-                
-            } else {
-                passwordInput.type = "password";
-                eyeIcon.innerHTML = '<i class="fa-solid fa-eye-slash"></i>'; // Change icon to "eye-slash"
-               
-            }
+        // Change status message on button click
+        document.getElementById('testButton').addEventListener('click', function() {
+            document.getElementById('statusMessage').textContent = 'Status: Button was clicked!';
         });
 
-        
+        // Display current time
+        function updateTime() {
+            const currentTime = new Date().toLocaleTimeString();
+            document.getElementById('currentTime').textContent = currentTime;
+        }
+        setInterval(updateTime, 1000); // Update every second
     </script>
+
 </body>
+</html>
 
-<style>
-
-/* Existing styles for web */
-.btn-primary,
-.btn-warning,
-.btn-danger {
-  background-color: #BF8D5C !important;
-  border-color: #BF8D5C !important;
-}
-
-.btn-primary:hover,
-.btn-warning:hover,
-.btn-danger:hover {
-  background-color: #a37347 !important;
-  border-color: #a37347 !important;
-}
-
-/* index.css */
-a {
-    color: #008552;
-    font-size: 14px;
-    display: block;
-    text-decoration: none;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.login-title {
-    text-align: center;
-    font-weight: bold;
-    color: #333;
-}
-
-#login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.notice {
-    font-size: 13px;
-    text-align: center;
-    color: #666;
-}
-
-.login {
-    width: 35%;
-    background: #fff;
-    padding: 40px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100vh;
-}
-
-.login a {
-    margin-top: 20px;
-    color: #666;
-    font-weight: 500;
-}
-
-/* Logo Styling */
-.logo {
-    display: block;
-    margin: 0 auto 30px;
-    width: 80px; /* Bigger width */
-    height: auto; /* Maintain aspect ratio */
-}
-
-/* Form Styling */
-.form-login {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Label Styling */
-.form-login label {
-    font-size: 14px;
-    color: #333;
-    font-weight: 600;
-}
-
-/* Input fields */
-.input-email,
-.input-password {
-    width: 100%;
-    background: #f7f7f7;
-    border-radius: 4px;
-    padding: 10px;
-    display: flex;
-    border: 1px solid #ccc;
-    align-items: center;
-    font-size: 16px;
-    transition: 0.3s;
-}
-
-.input-email input,
-.input-password input {
-    width: 100%;
-    border: none;
-    background: none;
-    font-size: 16px;
-    padding: 5px 0;
-    outline: none;
-    color: #333;
-}
-
-.input-email input::placeholder,
-.input-password input::placeholder {
-    color: #aaa;
-}
-
-.input-email:hover,
-.input-password:hover {
-    border-color: #008552;
-}
-
-/* Icon Styling */
-.icon {
-    padding: 6px;
-    color: #666;
-    min-width: 30px;
-    text-align: center;
-}
-
-/* Submit Button */
-button[type="submit"] {
-    width: 100%;
-    border: 0;
-    border-radius: 25px;
-    padding: 14px;
-    background: #BF8C5D; /* Blue background */
-    color: #FFF; /* White text */
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-button[type="submit"]:hover {
-    background: #BF8C5D; /* Slightly darker blue on hover */
-    opacity: 0.9;
-}
-
-/* Background */
-.background {
-    width: 65%;
-    height: 100vh;
-    background: url('libs/image/landscape_background.png') center no-repeat;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-    flex-direction: column;
-}
-
-.background h1 {
-    max-width: 420px;
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: right;
-}
-
-.background p {
-    max-width: 650px;
-    color: #1a1a1a;
-    font-size: 15px;
-    text-align: right;
-    margin: 0;
-}
-
-/* Created Section */
-.created {
-    margin-top: 40px;
-    text-align: center;
-}
-
-.created p {
-    font-size: 13px;
-    font-weight: bold;
-    color: #008552;
-}
-
-.created a {
-    color: #008552;
-    font-weight: 500;
-    text-decoration: none;
-}
-
-/* Mobile-specific adjustments */
-@media screen and (max-width: 768px) {
-    .background {
-        display: none !important;
-    }
-
-    .login {
-        width: 90%; /* Adjust width for mobile */
-        padding: 20px; /* Adjust padding for mobile */
-        height: auto; /* Allow height to adjust naturally */
-    }
-
-    .form-login label {
-        font-size: 14px;
-        color: #333;
-        font-weight: 600;
-    }
-
-    .input-email,
-    .input-password {
-        width: calc(100% - 20px); /* Adjust width for better fit */
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    button[type="submit"] {
-        width: calc(100% - 20px); /* Adjust width for better fit */
-        padding: 14px;
-        font-size: 16px;
-    }
-}
-
-
-
-
-
-
-
-
-</style>
