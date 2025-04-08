@@ -12,6 +12,10 @@
     {
       "src": "/(.*)",
       "dest": "app.js"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/index.html"
     }
   ]
 }
