@@ -94,36 +94,8 @@ function login() {
                             localStorage.setItem('user_level', userData.user_level || '');
                             localStorage.setItem('user_status', userData.user_status || '');
                         
-                            // Set session data via API
-                            fetch('/set-session', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    userId: user.uid,
-                                    email: email,
-                                    userLevel: userData.user_level,
-                                    fullName: userData.full_name || ''
-                                })
-                            })
-                            .then(response => {
-                                if (response.ok) {
-                                    // Redirect based on user level
-                                    if (userData.user_level == 2) {
-                                        window.location.href = '/bookings';
-                                    } else {
-                                        window.location.href = '/dashboard';
-                                    }
-                                } else {
-                                    return response.json().then(errorData => {
-                                        console.error('Session setup failed:', errorData);
-                                        alert('Failed to set session. Please contact support if the issue persists.');
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error setting session:', error);
-                                alert('An unexpected error occurred while setting the session. Please try again later.');
-                            });
+                            // Set session data via API with retry mechanism
+                            setSessionWithRetry(user.uid, email, userData.user_level, userData.full_name || '');
                         }
                         else {
                             alert('No user data found.');
@@ -194,6 +166,43 @@ function sendLoginFailureEmail(email) {
     })
     .catch(error => {
         console.error('Error sending login failure email:', error);
+    });
+}
+
+function setSessionWithRetry(userId, email, userLevel, fullName, retries = 3) {
+    fetch('/set-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, email, userLevel, fullName })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Redirect based on user level
+            if (userLevel == 2) {
+                window.location.href = '/bookings';
+            } else {
+                window.location.href = '/dashboard';
+            }
+        } else {
+            return response.json().then(errorData => {
+                console.error('Session setup failed:', errorData);
+                if (retries > 0) {
+                    console.warn(`Retrying session setup (${3 - retries + 1}/3)...`);
+                    setSessionWithRetry(userId, email, userLevel, fullName, retries - 1);
+                } else {
+                    alert('Failed to set session after multiple attempts. Please contact support.');
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error setting session:', error);
+        if (retries > 0) {
+            console.warn(`Retrying session setup (${3 - retries + 1}/3)...`);
+            setSessionWithRetry(userId, email, userLevel, fullName, retries - 1);
+        } else {
+            alert('An unexpected error occurred while setting the session. Please try again later.');
+        }
     });
 }
 
