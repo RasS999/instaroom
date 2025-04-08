@@ -44,7 +44,17 @@
     <h2 style="margin-top: 10px; margin-bottom: 20px;">InstaRoom</h2>
     
     <a href="/dashboard" id="dashboardLink">Dashboard</a>
-    <a href="/users" id="manageGuestLink">Manage Guest</a>
+
+    <div class="menu-item">
+        <a href="#" class="submenu-toggle">
+            Guest
+            <i class="fa-sharp fa-solid fa-caret-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="/users" id="manageGuestLink">Manage Guest</a>
+            <a href="/user-report-and-analysis">User Report and Analysis</a>
+        </div>
+    </div>
 
     <div class="menu-item">
         <a href="#" class="submenu-toggle">
@@ -66,6 +76,7 @@
             <a href="/bookings">Booking List</a>
             <a href="/booking-history">Checked-out History</a>
             <a href="/feedback">Feedback</a> 
+            <a href="/all-transaction-report">All Transaction Report</a> 
         </div>
     </div>
     
@@ -278,13 +289,23 @@ const feedbackStatus = feedbackDropdown ? feedbackDropdown.value.toLowerCase().t
 
 <style>
 
+
+    html, body {
+        background-color: #E0C29D !important;
+    }
+
+    .main-content {
+        background-color: #E0C29D !important;
+    }
+
+
     .hms {
         font-size: 14px; /* Increased font size */
     }
     
     /* Table Styling */
     .table {
-        width: 84.4%;
+        width: 100%;
         margin-top: 12px;
         border-collapse: collapse;
         font-family: 'Montserrat', sans-serif;
@@ -292,18 +313,6 @@ const feedbackStatus = feedbackDropdown ? feedbackDropdown.value.toLowerCase().t
         background-color: #F5F5DC;
         table-layout: auto;
     }
-    
-    /* Main Content Box */
-    .main-content {
-        background-color: #E0C29D;
-        padding: 12px;
-        border-radius: 6px;
-        margin: 0px auto;
-        width: 100%;
-        overflow-x: auto;
-        box-sizing: border-box;
-    }
-    
     
     /* Adjust padding for table cells */
     .table th, .table td {

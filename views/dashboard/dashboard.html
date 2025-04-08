@@ -44,7 +44,17 @@
     <h2 style="margin-top: 10px; margin-bottom: 20px;">InstaRoom</h2>
     
     <a href="/dashboard" id="dashboardLink">Dashboard</a>
-    <a href="/users" id="manageGuestLink">Manage Guest</a>
+
+    <div class="menu-item">
+        <a href="#" class="submenu-toggle">
+            Guest
+            <i class="fa-sharp fa-solid fa-caret-down"></i>
+        </a>
+        <div class="submenu">
+            <a href="/users" id="manageGuestLink">Manage Guest</a>
+            <a href="/user-report-and-analysis">User Report and Analysis</a>
+        </div>
+    </div>
 
     <div class="menu-item">
         <a href="#" class="submenu-toggle">
@@ -65,7 +75,8 @@
         <div class="submenu">
             <a href="/bookings">Booking List</a>
             <a href="/booking-history">Checked-out History</a>
-            <a href="/feedback">Feedback</a>
+            <a href="/feedback">Feedback</a> 
+            <a href="/all-transaction-report">All Transaction Report</a> 
         </div>
     </div>
     
