@@ -6,7 +6,11 @@
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "firebase-admin": "^13.2.0",
+<<<<<<< HEAD
     "vercel": "^41.5.0"
+=======
+    "serverless-http": "^3.2.0"
+>>>>>>> d4a81c30e9a51e0d53f621234cdc184e82748d12
   },
   "scripts": {
     "start": "node server.js",

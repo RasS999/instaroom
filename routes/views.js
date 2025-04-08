@@ -5,6 +5,10 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const path = require('path');
 
+// Serve static files
+router.use('/views', express.static(path.join(__dirname, '/../views')));
+router.use('/libs', express.static(path.join(__dirname, '/../libs')));
+
 // Login page (no auth required)
 router.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '/../views/login/index.html')); // Login page
