@@ -65,92 +65,94 @@ function login() {
         return;
     }
 
-    // Authenticate user with Firebase Auth
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            failedAttempts = 0; // Reset failed attempts on successful login
-            const user = userCredential.user;
+    .then((userCredential) => {
+        failedAttempts = 0; // Reset failed attempts on successful login
+        const user = userCredential.user;
 
-            if (user.emailVerified) {
-                const user_data = { last_login: new Date().toISOString() };
-                const userRef = ref(database, 'System_Users/' + user.uid);
+        if (user.emailVerified) {
+            const user_data = { last_login: new Date().toISOString() };
+            const userRef = ref(database, 'System_Users/' + user.uid);
 
-                get(userRef)
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            const userData = snapshot.val();
-                        
-                            if (userData.user_status !== 'active') {
-                                alert('Your account is not active.');
-                                signOut(auth);
-                                return;
-                            }
-                        
-                            // Store user data in localStorage
-                            localStorage.setItem('email', email);
-                            localStorage.setItem('full_name', userData.full_name || '');
-                            localStorage.setItem('contact_number', userData.contact_number || '');
-                            localStorage.setItem('country_code', userData.country_code || '');
-                            localStorage.setItem('user_level', userData.user_level || '');
-                            localStorage.setItem('user_status', userData.user_status || '');
-                        
-                            // Set session data via API with retry mechanism
-                            setSessionWithRetry(user.uid, email, userData.user_level, userData.full_name || '');
+            get(userRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                    
+                        if (userData.user_status !== 'active') {
+                            alert('Your account is not active.');
+                            signOut(auth);
+                            return;
                         }
-                        else {
-                            alert('No user data found.');
-                        }
+                    
+                        // Store user data in localStorage
+                        localStorage.setItem('email', email);
+                        localStorage.setItem('full_name', userData.full_name || '');
+                        localStorage.setItem('contact_number', userData.contact_number || '');
+                        localStorage.setItem('country_code', userData.country_code || '');
+                        localStorage.setItem('user_level', userData.user_level || '');
+                        localStorage.setItem('user_status', userData.user_status || '');
+                    
+                        // Set session data via API with retry mechanism
+                        setSessionWithRetry(user.uid, email, userData.user_level, userData.full_name || '');
+
+                        // Successful login alert
+                        alert('Login successful! Welcome, ' + userData.full_name || email + '.');
+                    }
+                    else {
+                        alert('No user data found.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error retrieving user data:', error);
+                    alert('Failed to retrieve user data.');
+                });
+        } else {
+            alert('Your account is not verified.');
+            setTimeout(() => {
+                sendEmailVerification(user)
+                    .then(() => {
+                        alert('A verification email has been sent. Please check your inbox.');
                     })
                     .catch((error) => {
-                        console.error('Error retrieving user data:', error);
-                        alert('Failed to retrieve user data.');
+                        console.error('Error sending verification email:', error);
+                        alert('Failed to send verification email.');
                     });
-            } else {
-                alert('Your account is not verified.');
-                setTimeout(() => {
-                    sendEmailVerification(user)
-                        .then(() => {
-                            alert('A verification email has been sent. Please check your inbox.');
-                        })
-                        .catch((error) => {
-                            console.error('Error sending verification email:', error);
-                            alert('Failed to send verification email.');
-                        });
-                    signOut(auth);
-                }, 2000);
-            }
-        })
-        .catch((error) => {
-            console.error('Login error:', error);
-            failedAttempts++;
+                signOut(auth);
+            }, 2000);
+        }
+    })
+    .catch((error) => {
+        console.error('Login error:', error);
+        failedAttempts++;
 
-            // Handle specific error codes
-            if (error.code === "auth/invalid-login-credentials") {
-                alert('Incorrect email or password. Please try again.');
-            } else if (error.code === "auth/user-not-found") {
-                alert('Email not found. Please check your email.');
-            } else if (error.code === "auth/wrong-password") {
-                alert('Incorrect password. Please try again.');
-            } else if (error.code === "auth/invalid-email") {
-                alert('Invalid email format. Please check your email.');
-            } else if (error.code === "auth/too-many-requests") {
-                alert('Too many login attempts. Please try again later.');
-            } else {
-                alert('An unexpected error occurred. Please try again.');
-            }
+        // Handle specific error codes
+        if (error.code === "auth/invalid-login-credentials") {
+            alert('Incorrect email or password. Please try again.');
+        } else if (error.code === "auth/user-not-found") {
+            alert('Email not found. Please check your email.');
+        } else if (error.code === "auth/wrong-password") {
+            alert('Incorrect password. Please try again.');
+        } else if (error.code === "auth/invalid-email") {
+            alert('Invalid email format. Please check your email.');
+        } else if (error.code === "auth/too-many-requests") {
+            alert('Too many login attempts. Please try again later.');
+        } else {
+            alert('An unexpected error occurred. Please try again.');
+        }
 
-            // Call the sendLoginFailureEmail function to notify of the failed login attempt
-            sendLoginFailureEmail(email);
+        // Call the sendLoginFailureEmail function to notify of the failed login attempt
+        sendLoginFailureEmail(email);
 
-            // Lockout mechanism if too many failed attempts
-            if (failedAttempts >= maxFailedAttempts) {
-                lockoutTimer = setTimeout(() => {
-                    failedAttempts = 0; // Reset failed attempts after lockout period
-                    alert('You can try logging in again now.');
-                }, lockoutTime);
-            }
-        });
-}
+        // Lockout mechanism if too many failed attempts
+        if (failedAttempts >= maxFailedAttempts) {
+            lockoutTimer = setTimeout(() => {
+                failedAttempts = 0; // Reset failed attempts after lockout period
+                alert('You can try logging in again now.');
+            }, lockoutTime);
+        }
+    });
+
 
 function sendLoginFailureEmail(email) {
     // For simplicity, assuming you send a failure notification email to an admin or logging service
