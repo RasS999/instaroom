@@ -136,7 +136,7 @@ function login() {
             } else if (error.code === "auth/too-many-requests") {
                 alert('Too many login attempts. Please try again later.');
             } else {
-                alert('Incorrect email or password. Please try again.');
+                alert('An unexpected error occurred. Please try again.');
             }
 
             // Call the sendLoginFailureEmail function to notify of the failed login attempt
@@ -166,6 +166,7 @@ function sendLoginFailureEmail(email) {
     })
     .catch(error => {
         console.error('Error sending login failure email:', error);
+        alert('Failed to send login failure notification. Please check your network or disable ad blockers.');
     });
 }
 
