@@ -1,19 +1,5 @@
 {
   "version": 2,
-  "routes": [
-    {
-      "src": "/views/(.*)",
-      "dest": "/views/$1"
-    },
-    {
-      "src": "/libs/(.*)",
-      "dest": "/libs/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "app.js"
-    }
-  ],
   "rewrites": [
     { "source": "/", "destination": "/view/index.html" },
     { "source": "/views/login/index.html", "destination": "/views/login/index.html" }
