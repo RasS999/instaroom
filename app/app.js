@@ -1,32 +1,33 @@
+// app\app.js
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const session = require('express-session');
 const admin = require('firebase-admin');
-
 const app = express();
 
-// Firebase Admin
-const serviceAccount = require('./firebase-credentials.json');
+// Initialize Firebase Admin SDK
+const serviceAccount = require(path.join(__dirname, 'firebase-credentials.json'));
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://insta-room-4b79a-default-rtdb.firebaseio.com'
 });
 
-// Middleware
+// Middleware for session and CORS
 app.use(express.json());
 app.use(cors());
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: false } // Ensure cookies are not secure for local development
 }));
 
-// Static files
-app.use('/libs', express.static(path.resolve(__dirname, 'libs')));
+// Serve static files (CSS, JS, images) from the 'libs' folder
+app.use('/libs', express.static(path.resolve(__dirname, '../libs'))); // Ensure correct path resolution
 
-// Views redirection
+// Redirect old '/views/...' URLs to the new cleaner routes
 app.use('/views', (req, res, next) => {
     const urlMapping = {
 '/bookings/booking_history.html': '/booking-history',
@@ -42,43 +43,43 @@ app.use('/views', (req, res, next) => {
         '/profile/profile.html': '/profile',
         '/login/index.html': '/login',
     };
+
     const newPath = urlMapping[req.path];
-<<<<<<< HEAD
     if (newPath) {
         return res.redirect(newPath);
     }
     next(); // If no mapping is found, proceed to the next middleware
-=======
-    if (newPath) return res.redirect(newPath);
-    next();
->>>>>>> d4a81c30e9a51e0d53f621234cdc184e82748d12
 });
 
-// Session route
+// Default route for the login page
+app.get('/', (req, res) => {
+    res.redirect('/login'); // Redirect to the cleaner login route
+});
+
+// Route to set session data
 app.post('/set-session', (req, res) => {
     const { userId, email, userLevel, fullName } = req.body;
-    if (!userId || !email) return res.status(400).send('Invalid session data.');
-    req.session.user = { userId, email, userLevel, fullName };
+
+    if (!userId || !email) {
+        return res.status(400).send('Invalid session data.');
+    }
+
+    req.session.user = {
+        userId,
+        email,
+        userLevel,
+        fullName,
+    };
+
     res.status(200).send('Session set successfully.');
 });
 
-// Routes
-const viewRoutes = require('./routes/views'); // adjust path if needed
-app.use('/', viewRoutes);
+// Import routes
+const viewRoutes = require('../routes/views');
+app.use('/', viewRoutes);  // Main route for views (without '/views' prefix)
 
-// Catch-all route (for client-side routing like React or Vue apps)
-app.all('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Adjust based on your app structure
+// Start the server on port 5001
+const PORT = 5001;
+app.listen(PORT, () => {
+    console.log(`Server running on http://127.0.0.1:${PORT}`);
 });
-
-// Export the app as a handler (for serverless function)
-module.exports = app;
-
-// Vercel's platform will automatically handle the serverless environment for you.
-// If testing locally, you can start the app like this:
-if (require.main === module) {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}
