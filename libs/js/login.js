@@ -65,130 +65,140 @@ function login() {
         return;
     }
 
+    // Authenticate user with Firebase Auth
     signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        failedAttempts = 0; // Reset failed attempts on successful login
-        const user = userCredential.user;
+        .then((userCredential) => {
+            failedAttempts = 0; // Reset failed attempts on successful login
+            const user = userCredential.user;
 
-        if (user.emailVerified) {
-            const user_data = { last_login: new Date().toISOString() };
-            const userRef = ref(database, 'System_Users/' + user.uid);
+            if (user.emailVerified) {
+                const user_data = { last_login: new Date().toISOString() };
+                const userRef = ref(database, 'System_Users/' + user.uid);
 
-            get(userRef)
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                    
-                        if (userData.user_status !== 'active') {
-                            alert('Your account is not active.');
-                            signOut(auth);
-                            return;
+                get(userRef)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const userData = snapshot.val();
+                        
+                            if (userData.user_status !== 'active') {
+                                alert('Your account is not active.');
+                                signOut(auth);
+                                return;
+                            }
+                        
+                            // Store user data in localStorage
+                            localStorage.setItem('email', email);
+                            localStorage.setItem('full_name', userData.full_name || '');
+                            localStorage.setItem('contact_number', userData.contact_number || '');
+                            localStorage.setItem('country_code', userData.country_code || '');
+                            localStorage.setItem('user_level', userData.user_level || '');
+                            localStorage.setItem('user_status', userData.user_status || '');
+                        
+                            // Set session data via API
+                            fetch('/set-session', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    userId: user.uid,
+                                    email: email,
+                                    userLevel: userData.user_level,
+                                    fullName: userData.full_name || ''
+                                })
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    // Redirect based on user level
+                                    if (userData.user_level == 2) {
+                                        window.location.href = '/bookings';
+                                    } else {
+                                        window.location.href = '/dashboard';
+                                    }
+                                } else {
+                                    alert('Failed to set session. Please try again.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error setting session:', error);
+                                alert('Failed to set session. Please try again.');
+                            });
                         }
-                    
-                        // Store user data in localStorage
-                        localStorage.setItem('email', email);
-                        localStorage.setItem('full_name', userData.full_name || '');
-                        localStorage.setItem('contact_number', userData.contact_number || '');
-                        localStorage.setItem('country_code', userData.country_code || '');
-                        localStorage.setItem('user_level', userData.user_level || '');
-                        localStorage.setItem('user_status', userData.user_status || '');
-                    
-                        // Redirect based on user level
-                        if (userData.user_level === 1) {
-                            window.location.href = '/dashboard.html'; // Redirect to admin dashboard
-                        } else if (userData.user_level === 2) {
-                            window.location.href = '/bookings.html'; // Redirect to staff bookings
-                        } else {
-                            alert('Unknown user level. Please contact support.');
+                        else {
+                            alert('No user data found.');
                         }
-                    }
-                    else {
-                        alert('No user data found.');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error retrieving user data:', error);
-                    alert('Failed to retrieve user data.');
-                });
-        } else {
-            alert('Your account is not verified.');
-            setTimeout(() => {
-                sendEmailVerification(user)
-                    .then(() => {
-                        alert('A verification email has been sent. Please check your inbox.');
                     })
                     .catch((error) => {
-                        console.error('Error sending verification email:', error);
-                        alert('Failed to send verification email.');
+                        console.error('Error retrieving user data:', error);
+                        alert('Failed to retrieve user data.');
                     });
-                signOut(auth);
-            }, 2000);
-        }
-    })
-    .catch((error) => {
-        console.error('Login error:', error);
-        failedAttempts++;
-
-        // Handle specific error codes
-        if (error.code === "auth/invalid-login-credentials") {
-            alert('Incorrect email or password. Please try again.');
-        } else if (error.code === "auth/user-not-found") {
-            alert('Email not found. Please check your email.');
-        } else if (error.code === "auth/wrong-password") {
-            alert('Incorrect password. Please try again.');
-        } else if (error.code === "auth/invalid-email") {
-            alert('Invalid email format. Please check your email.');
-        } else if (error.code === "auth/too-many-requests") {
-            alert('Too many login attempts. Please try again later.');
-        } else {
-            alert('An unexpected error occurred. Please try again.');
-        }
-
-        // Call the sendLoginFailureEmail function to notify of the failed login attempt
-        sendLoginFailureEmail(email);
-
-        // Lockout mechanism if too many failed attempts
-        if (failedAttempts >= maxFailedAttempts) {
-            if (lockoutTimer) {
-                clearTimeout(lockoutTimer);
+            } else {
+                alert('Your account is not verified.');
+                setTimeout(() => {
+                    sendEmailVerification(user)
+                        .then(() => {
+                            alert('A verification email has been sent. Please check your inbox.');
+                        })
+                        .catch((error) => {
+                            console.error('Error sending verification email:', error);
+                            alert('Failed to send verification email.');
+                        });
+                    signOut(auth);
+                }, 2000);
             }
-            lockoutTimer = setTimeout(() => {
-                failedAttempts = 0; // Reset failed attempts after lockout period
-                alert('You can try logging in again now.');
-            }, lockoutTime);
-        }
-    });
-}
+        })
+        .catch((error) => {
+            console.error('Login error:', error);
+            failedAttempts++;
 
+            // Handle specific error codes
+            if (error.code === "auth/invalid-login-credentials") {
+                alert('Incorrect email or password. Please try again.');
+            } else if (error.code === "auth/user-not-found") {
+                alert('Email not found. Please check your email.');
+            } else if (error.code === "auth/wrong-password") {
+                alert('Incorrect password. Please try again.');
+            } else if (error.code === "auth/invalid-email") {
+                alert('Invalid email format. Please check your email.');
+            } else if (error.code === "auth/too-many-requests") {
+                alert('Too many login attempts. Please try again later.');
+            } else {
+                alert('Incorrect email or password. Please try again.');
+            }
+
+            // Call the sendLoginFailureEmail function to notify of the failed login attempt
+            sendLoginFailureEmail(email);
+
+            // Lockout mechanism if too many failed attempts
+            if (failedAttempts >= maxFailedAttempts) {
+                lockoutTimer = setTimeout(() => {
+                    failedAttempts = 0; // Reset failed attempts after lockout period
+                    alert('You can try logging in again now.');
+                }, lockoutTime);
+            }
+        });
+}
 
 function sendLoginFailureEmail(email) {
     // For simplicity, assuming you send a failure notification email to an admin or logging service
-    const full_name = 'Unknown'; // Adjust if necessary
+    const full_name = 'Unknown'; // You can adjust this based on your user data
     fetch('http://localhost:8000/send_email_login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `email=${encodeURIComponent(email)}&full_name=${encodeURIComponent(full_name)}`
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to send login failure email.');
-        }
-        return response.text();
-    })
+    .then(response => response.text())
     .then(data => {
         console.log('Login failure email sent:', data);
     })
     .catch(error => {
         console.error('Error sending login failure email:', error);
-        alert('Failed to send login failure notification. Please check your network or disable ad blockers.');
     });
 }
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log('User is signed in:', user.email);
-        // You can also verify and update session data here
     } else {
         console.log('No user is signed in.');
     }
 });
+
