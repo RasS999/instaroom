@@ -1,4 +1,3 @@
-// filepath: c:\xampp\htdocs\InstaRoom\utils\sessionHandler.js
 import { withIronSessionApiRoute } from 'iron-session/next';
 
 export const sessionOptions = {

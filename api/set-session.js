@@ -1,4 +1,6 @@
-import { withSession } from '../../utils/sessionHandler'; // Import the session handler
+// api/set-session.js
+
+import { withSession } from '../utils/sessionHandler'; // Corrected path
 
 export default withSession(async function handler(req, res) {
     if (req.method === 'POST') {
