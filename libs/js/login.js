@@ -93,8 +93,14 @@ function login() {
                         localStorage.setItem('user_level', userData.user_level || '');
                         localStorage.setItem('user_status', userData.user_status || '');
                     
-                        // Successful login alert
-                        alert('Login successful! Welcome, ' + (userData.full_name || email) + '.');
+                        // Redirect based on user level
+                        if (userData.user_level === 1) {
+                            window.location.href = '/dashboard.html'; // Redirect to admin dashboard
+                        } else if (userData.user_level === 2) {
+                            window.location.href = '/bookings.html'; // Redirect to staff bookings
+                        } else {
+                            alert('Unknown user level. Please contact support.');
+                        }
                     }
                     else {
                         alert('No user data found.');
@@ -153,6 +159,7 @@ function login() {
         }
     });
 }
+
 
 function sendLoginFailureEmail(email) {
     // For simplicity, assuming you send a failure notification email to an admin or logging service
