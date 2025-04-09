@@ -95,7 +95,7 @@ function login() {
                             localStorage.setItem('user_status', userData.user_status || '');
                         
                             // Set session data via API
-                            fetch('/set-session', {
+                            fetch('/api/set-session', { // Use the Vercel API route
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
