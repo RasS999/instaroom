@@ -15,3 +15,12 @@ cd C:\xampp\htdocs\InstaRoom\app
 
 node app/app.js
 node app/app.js
+
+
+
+-- para i uppdate yung domain --
+
+vercel 
+
+vercel --prod
+
