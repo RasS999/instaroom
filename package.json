@@ -7,6 +7,7 @@
     "express-session": "^1.18.1",
     "firebase-admin": "^13.2.0",
     "iron-session": "^8.0.4",
+    "uuid": "^11.1.0",
     "vercel": "^41.0.2"
   },
   "scripts": {

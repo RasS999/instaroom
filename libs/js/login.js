@@ -85,7 +85,7 @@ function login() {
                                 signOut(auth);
                                 return;
                             }
-                        
+
                             // Store user data in localStorage
                             localStorage.setItem('email', email);
                             localStorage.setItem('full_name', userData.full_name || '');
@@ -93,36 +93,15 @@ function login() {
                             localStorage.setItem('country_code', userData.country_code || '');
                             localStorage.setItem('user_level', userData.user_level || '');
                             localStorage.setItem('user_status', userData.user_status || '');
-                        
-                            // Set session data via API
-                            fetch('/api/set-session', { // Use the Vercel API route
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    userId: user.uid,
-                                    email: email,
-                                    userLevel: userData.user_level,
-                                    fullName: userData.full_name || ''
-                                })
-                            })
-                            .then(response => {
-                                if (response.ok) {
-                                    // Redirect based on user level
-                                    if (userData.user_level == 2) {
-                                        window.location.href = '/bookings';
-                                    } else {
-                                        window.location.href = '/dashboard';
-                                    }
-                                } else {
-                                    alert('Failed to set session. Please try again.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error setting session:', error);
-                                alert('Failed to set session. Please try again.');
-                            });
-                        }
-                        else {
+
+                            // Redirect based on user level
+                            if (userData.user_level == 2) {
+                                window.location.href = '/views/login/index.html';
+                            } else {
+                                window.location.href = '/views/dashboard/dashboard.html';
+                            }
+
+                        } else {
                             alert('No user data found.');
                         }
                     })
@@ -176,6 +155,7 @@ function login() {
             }
         });
 }
+
 
 function sendLoginFailureEmail(email) {
     // For simplicity, assuming you send a failure notification email to an admin or logging service

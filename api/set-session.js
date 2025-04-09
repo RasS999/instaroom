@@ -1,6 +1,4 @@
-// api/set-session.js
-
-import { withSession } from '../utils/sessionHandler'; // Corrected path
+import { withSession } from '../utils/sessionHandler'; 
 
 export default withSession(async function handler(req, res) {
     if (req.method === 'POST') {
@@ -17,9 +15,14 @@ export default withSession(async function handler(req, res) {
             userLevel,
             fullName,
         };
-        await req.session.save(); // Save the session
 
-        return res.status(200).json({ message: 'Session set successfully.' });
+        // Save the session
+        try {
+            await req.session.save();
+            return res.status(200).json({ message: 'Session set successfully.' });
+        } catch (error) {
+            return res.status(500).json({ error: 'Failed to save session data.' });
+        }
     } else {
         return res.status(405).json({ error: 'Method not allowed.' });
     }
