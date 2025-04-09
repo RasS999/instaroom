@@ -1,4 +1,4 @@
-import { withSession } from '../../utils/sessionHandler';
+import { withSession } from '../../utils/sessionHandler'; // Import the session handler
 
 export default withSession(async function handler(req, res) {
     if (req.method === 'POST') {
@@ -22,17 +22,3 @@ export default withSession(async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed.' });
     }
 });
-
-import { withIronSessionApiRoute } from 'iron-session/next';
-
-export const sessionOptions = {
-    password: process.env.SESSION_PASSWORD || 'a_secure_password_with_at_least_32_characters',
-    cookieName: 'instaroom_session',
-    cookieOptions: {
-        secure: process.env.NODE_ENV === 'production',
-    },
-};
-
-export function withSession(handler) {
-    return withIronSessionApiRoute(handler, sessionOptions);
-}
