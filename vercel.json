@@ -1,5 +1,19 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/views/login/index.html" }
+    { "source": "/", "destination": "/views/login/index.html" },
+    { "source": "/login", "destination": "/views/login/index.html" },
+    { "source": "/register", "destination": "/views/register/register_admin.html" },
+    { "source": "/forgot-password", "destination": "/views/forgot_password/forgot_password.html" },
+    { "source": "/dashboard", "destination": "/views/dashboard/dashboard.html" },
+    { "source": "/users", "destination": "/views/users/manage_user.html" },
+    { "source": "/user-report-and-analysis", "destination": "/views/users/user_report_and_analysis.html" },
+    { "source": "/bookings", "destination": "/views/bookings/bookings.html" },
+    { "source": "/booking-history", "destination": "/views/bookings/booking_history.html" },
+    { "source": "/feedback", "destination": "/views/bookings/feedback.html" },
+    { "source": "/all-transaction-report", "destination": "/views/bookings/all_transaction_report.html" },
+    { "source": "/rooms", "destination": "/views/rooms/manage_rooms.html" },
+    { "source": "/room-settings", "destination": "/views/rooms/room_settings.html" },
+    { "source": "/system-users", "destination": "/views/system_users/manage_system_user.html" },
+    { "source": "/profile", "destination": "/views/profile/profile.html" }
   ]
 }
